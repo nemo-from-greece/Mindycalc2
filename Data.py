@@ -8,6 +8,17 @@ class Planet(Enum):
     EREKIR = 1
 
 class Resource:
+    """
+    Base class for any resource (item or fluid).
+
+    Attributes:
+        name (str): Name of the resource.
+        planet (int): Planet ID.
+        allBlocks (List[Block]): List of all blocks in the game.
+        producers (List[Block]): Initial list of blocks that produce this resource.
+        image (str): File path to the image representing the resource.
+    """
+
     def __init__(
         self,
         name: str,
@@ -16,16 +27,6 @@ class Resource:
         producers: List[str],
         image: str
     ):
-        """
-        Base class for any resource (item or fluid).
-
-        Args:
-            name (str): Name of the resource.
-            planet (int): Planet ID.
-            allBlocks (List[Block]): List of all blocks in the game.
-            producers (List[Block]): Initial list of blocks that produce this resource.
-            image (str): File path to the image representing the resource.
-        """
         self.name: str = name
         self.planet: Planet = Planet(planet)
         self.allBlocks: List['Block'] = allBlocks
@@ -311,6 +312,17 @@ class Factory(Block):
         Returns:
             Dict[str, Dict[str, float]]: {Inputs: {Resource: rate}, Outputs: {Resource: rate}}
         """
+
+        def scale_recipe(recipe: dict, mult: float, effTime: float) -> dict:
+            scaledRecipe = {}
+            for key, value in recipe.items():
+                if (find_resource(key, self.planet) is Fluid or find_resource(key, self.planet) == 'heat' or
+                        find_resource(key, self.planet) == 'power'):
+                    scaledRecipe[key] = value * mult
+                else:
+                    scaledRecipe[key] = 60 * value / effTime
+            return scaledRecipe
+
         effectiveTime = self.time
         multiplier = 1
 
@@ -323,21 +335,8 @@ class Factory(Block):
             except Exception as e:
                 raise ValueError(f"Invalid heat expression '{expr}': {e}")
 
-        scaledInputs = {}
-        scaledOutputs = {}
-
-        for key, value in self.inputs.values():
-            if (find_resource(key, self.planet) is Fluid or find_resource(key, self.planet) ==
-                    'heat' or find_resource(key, self.planet) == 'power'):
-                scaledInputs[key] = value * multiplier
-            else:
-                scaledInputs[key] = 60 * value / effectiveTime
-        for key, value in self.outputs.values():
-            if (find_resource(key, self.planet) is Fluid or find_resource(key, self.planet) ==
-                    'heat' or find_resource(key, self.planet) == 'power'):
-                scaledOutputs[key] = value * multiplier
-            else:
-                scaledOutputs[key] = 60 * value / effectiveTime
+        scaledInputs = scale_recipe(self.inputs, multiplier, effectiveTime)
+        scaledOutputs = scale_recipe(self.outputs, multiplier, effectiveTime)
 
         return {'Inputs': scaledInputs, 'Outputs': scaledOutputs}
 
