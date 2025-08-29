@@ -423,15 +423,6 @@ def find_unit(name):
 def load_image(location):
     return ctk.CTkImage(Image.open(location).convert('RGBA'), size=(32, 32))
 
-# def list_coolants():
-#     coolants = []
-#     for i in blocks:
-#         if isinstance(i, Turret) and i.coolant:
-#             for key in i.coolant:
-#                 if key not in coolants:
-#                     coolants.append(key)
-#     return coolants
-
 blocks = [
     Turret('Duo',
            0,
@@ -1066,34 +1057,6 @@ blocks = [
                     'Navanax': {'Silicon': 1000, 'Plastanium': 600, 'Surge alloy': 500, 'Phase fabric': 350, 'Cryofluid': 180}
                 },
                 240), # Tetrative Reconstructor
-    Block('Large Beryllium Wall',
-          1,
-          0,
-          'Images/Blocks/Large Beryllium Wall.png'), # Large Beryllium Wall
-    Block('Large Tungsten Wall',
-          1,
-          0,
-          'Images/Blocks/Large Tungsten Wall.png'), # Large Tungsten Wall
-    Block('Large Carbide Wall',
-          1,
-          0,
-          'Images/Blocks/Large Carbide Wall.png'), # Large Carbide Wall
-    Block('Large Reinforced Surge Wall',
-          1,
-          0,
-          'Images/Blocks/Large Reinforced Surge Wall.png'), # Large Reinforced Surge Wall
-    Block('Reinforced Container',
-          1,
-          0,
-          'Images/Blocks/Reinforced Container.png'), # Reinforced Container
-    Block('Reinforced Liquid Container',
-          1,
-          0,
-          'Images/Blocks/Reinforced Liquid Container.png'), # Reinforced Liquid Container
-    Block('Beam Node',
-          1,
-          0,
-          'Images/Blocks/Beam Node.png'), # Beam Node
     UnitFactory('Constructor',
                 1,
                 120,
@@ -1675,4 +1638,11 @@ units = [
     Unit('Obviate', 1, 'Images/Units/Obviate.png'),
     Unit('Quell', 1, 'Images/Units/Quell.png'),
     Unit('Disrupt', 1, 'Images/Units/Disrupt.png'),
+    Unit('Large Beryllium Wall', 1, 'Images/Blocks/Large Beryllium Wall.png'),
+    Unit('Large Tungsten Wall', 1, 'Images/Blocks/Large Tungsten Wall.png'),
+    Unit('Large Carbide Wall', 1, 'Images/Blocks/Large Carbide Wall.png'),
+    Unit('Large Reinforced Surge Wall', 1, 'Images/Blocks/Large Reinforced Surge Wall.png'),
+    Unit('Reinforced Container', 1, 'Images/Blocks/Reinforced Container.png'),
+    Unit('Reinforced Liquid Container', 1, 'Images/Blocks/Reinforced Liquid Container.png'),
+    Unit('Beam Node', 1, 'Images/Blocks/Beam Node.png'),
 ]
