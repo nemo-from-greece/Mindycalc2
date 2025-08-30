@@ -1080,13 +1080,13 @@ blocks = [
                     'Beam Node': {'Beryllium': 8}
                 },
                 {
-                    'Large Beryllium Wall': 2.4,
-                    'Large Tungsten Wall': 3,
-                    'Large Carbide Wall': 6,
-                    'Large Reinforced Surge Wall': 4.08,
-                    'Reinforced Container': 1.41,
-                    'Reinforced Liquid Container': 0.57,
-                    'Beam Node': 0.25
+                    'Large Beryllium Wall': 2.4 * 1.666 + 0.283,
+                    'Large Tungsten Wall': 3 * 1.666 + 0.283,
+                    'Large Carbide Wall': 6 * 1.666 + 0.283,
+                    'Large Reinforced Surge Wall': 4.08 * 1.666 + 0.283,
+                    'Reinforced Container': 1.41 * 1.666 + 0.283,
+                    'Reinforced Liquid Container': 0.57 * 1.666 + 0.283,
+                    'Beam Node': 0.25 * 1.666 + 0.283
                 }), # Constructor
     UnitFactory('Tank Fabricator',
                 1,
