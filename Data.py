@@ -395,7 +395,7 @@ class UnitFactory(Block):
 
 def find_resource(name, planet):
     for i, resource in enumerate(resources):
-        if resource.name == name and resource.planet == planet:
+        if resource.name == name and resource.planet.name.lower().capitalize() == planet:
             return resources[i]
     raise ValueError(f"Resource '{name}' not found")
 
@@ -927,7 +927,7 @@ blocks = [
     UnitFactory('Ground Factory',
                 0,
                 72,
-                'Images/Blocks/Unit production/Additive Reconstructor.png',
+                'Images/Blocks/Unit production/Ground Factory.png',
                 {
                     'Dagger': None,
                     'Nova': None,
