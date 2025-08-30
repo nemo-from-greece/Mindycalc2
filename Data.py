@@ -1638,6 +1638,9 @@ units = [
     Unit('Obviate', 1, 'Images/Units/Obviate.png'),
     Unit('Quell', 1, 'Images/Units/Quell.png'),
     Unit('Disrupt', 1, 'Images/Units/Disrupt.png'),
+
+    # Place actual units above, continuing the pattern. Place blocks that can be assembled below, in any order.
+
     Unit('Large Beryllium Wall', 1, 'Images/Blocks/Large Beryllium Wall.png'),
     Unit('Large Tungsten Wall', 1, 'Images/Blocks/Large Tungsten Wall.png'),
     Unit('Large Carbide Wall', 1, 'Images/Blocks/Large Carbide Wall.png'),

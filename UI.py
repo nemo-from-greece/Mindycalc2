@@ -83,6 +83,12 @@ class FinalProductMenu(ctk.CTkFrame):
             for i, item in enumerate(items):
                 frame = self.make_item_button(gridFrame, item)
                 if self.category == 'Units':
+                    if i > 35 and self.planetFilter.lower() == 'serpulo': # Update this when new Serpulo units get
+                        # added.
+                        continue
+                    elif i > 15 and self.planetFilter.lower() == 'erekir': # Update this when new Erekir units get
+                        # added.
+                        continue
                     frame.grid(row=i % 5, column=i // 5, padx=8, pady=8)
                 else:
                     frame.grid(row=i // 4, column=i % 4, padx=8, pady=8)
@@ -95,6 +101,8 @@ class FinalProductMenu(ctk.CTkFrame):
                     frame = self.make_item_button(gridFrame, item)
                     itemsPlaced.append(item.name)
                     if self.category == 'Units':
+                        if count > 50: # Update this when new units get added.
+                            continue
                         frame.grid(row=count % 5, column=count // 5, padx=8, pady=8)
                     else:
                         frame.grid(row=count // 4, column=count % 4, padx=8, pady=8)
@@ -160,7 +168,7 @@ class ProductionCalculatorMenu(ctk.CTkFrame):
             for i in producers:
                 blockImage = Data.load_image(i.image)
                 countLabel = cw.MathLabel(inputsFrame, self.rate.var, lambda x, factory=i:
-                Logic.calculate_factory_count(factory, x, self.item.name))
+                    Logic.calculate_factory_count(factory, x, self.item.name))
                 choiceButton = ctk.CTkButton(inputsFrame, image=blockImage, text='',
                                              command=lambda factory=i, var=countLabel.compVar:
                                              print_output(var, factory))
@@ -168,7 +176,16 @@ class ProductionCalculatorMenu(ctk.CTkFrame):
                 countLabel.grid(row=producers.index(i), column=1, padx=5, pady=5)
 
         if self.category == 'Units':
-            pass
+            resources = Logic.calculate_process_inputs(self.item)
+            for i, (key, value) in enumerate(resources.items()):
+                resourceImage = Data.load_image(Data.find_resource(key, self.planet).image) if (key.lower() !=
+                                                                                                   'power') else Data.load_image('Images/power.png')
+                countLabel = cw.MathLabel(inputsFrame, self.rate.var, lambda x, rate=value: rate * x)
+                choiceButton = ctk.CTkButton(inputsFrame, image=resourceImage, text='',
+                                             command=lambda x=countLabel.compVar, rate=value, resource=key:
+                                             print(f'You need {rate * x} {resource}/s'))
+                choiceButton.grid(row=i, column=0, padx=5, pady=5)
+                countLabel.grid(row=i, column=1, padx=5, pady=5)
 
         if self.category == 'Power':
             pass
