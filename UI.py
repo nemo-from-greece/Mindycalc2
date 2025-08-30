@@ -83,10 +83,10 @@ class FinalProductMenu(ctk.CTkFrame):
             for i, item in enumerate(items):
                 frame = self.make_item_button(gridFrame, item)
                 if self.category == 'Units':
-                    if i > 35 and self.planetFilter.lower() == 'serpulo': # Update this when new Serpulo units get
+                    if i >= 35 and self.planetFilter.lower() == 'serpulo': # Update this when new Serpulo units get
                         # added.
                         continue
-                    elif i > 15 and self.planetFilter.lower() == 'erekir': # Update this when new Erekir units get
+                    elif i >= 15 and self.planetFilter.lower() == 'erekir': # Update this when new Erekir units get
                         # added.
                         continue
                     frame.grid(row=i % 5, column=i // 5, padx=8, pady=8)
@@ -101,7 +101,7 @@ class FinalProductMenu(ctk.CTkFrame):
                     frame = self.make_item_button(gridFrame, item)
                     itemsPlaced.append(item.name)
                     if self.category == 'Units':
-                        if count > 50: # Update this when new units get added.
+                        if count >= 50: # Update this when new units get added.
                             continue
                         frame.grid(row=count % 5, column=count // 5, padx=8, pady=8)
                     else:
