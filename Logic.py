@@ -146,7 +146,7 @@ def find_producers_resource(
 def calculate_factory_count(
         factory: Data.Factory,
         outputRate: float,
-        outputResource: Optional[str] = None):
+        outputResource: Optional[str] = None) -> float:
     """
     Calculate how many factories are required to produce a resource at a given rate.
 
@@ -158,7 +158,7 @@ def calculate_factory_count(
             Defaults to None.
 
     Returns:
-        int: The number of factories needed to meet the specified output rate.
+        float: The number of factories needed to meet the specified output rate.
     """
     outputs = factory.outputs
     if len(outputs) == 1:
@@ -235,52 +235,29 @@ def calculate_process_inputs(unit: Data.Unit | str, rate: float) -> dict[str, fl
         dict[str, float]: Mapping of resource names (items, fluids, power) to
         their required input rates, expressed in resources per second.
     """
-    if isinstance(unit, str):
-        unit = Data.find_unit(unit)
-
-    resources: dict[str, float] = {"power": 0}
-    # Pending entries carry their own state
-    # (unitName, effectiveRate, ratioSoFar, prevTime)
-    pending: list[tuple[str, float, float, float]] = []
-
-    # noinspection PyShadowingNames
-    def expand(unit: Data.Unit, rate: float, ratio: float = 1.0, prevTime: float | None = None) -> None:
-        path, factories = find_upgrade_path(unit)
-
-        # convert to per-second once at the top of this expansion
-        rate /= 60
-
-        for i, u in enumerate(path):
-            factory = factories[i]
-            t = factory.time if not isinstance(factory.time, dict) else factory.time[u.name]
-
-            if prevTime is not None:
-                ratio *= t / prevTime
-            prevTime = t
-
-            resources["power"] += factory.power * rate * ratio
-
-            for name, amount in factory.recipes[u.name].items():
-                try:
-                    resourceType = Data.find_resource_type(name)
-                except ValueError:
-                    resourceType = None
-
-                rateMulti = 1 if resourceType == "Fluid" else t
-
-                if resourceType is not None:
-                    resources[name] = resources.get(name, 0) + amount * ratio * rate / rateMulti
-                else:
-                    # carry forward state for deeper expansion
-                    pending.append((name, amount * ratio * rate / rateMulti, ratio, t))
-
-    # Expand root unit
-    expand(unit, rate)
-
-    # Process the dependency tree iteratively
+    rate /= 60
+    resources = {}
+    pending = {unit: rate}
     while pending:
-        subName, effRate, ratio, prevTime = pending.pop()
-        expand(Data.find_unit(subName), effRate * 60, ratio, prevTime)
+        unit, rate = pending.popitem()
+        if isinstance(unit, str):
+            unit = Data.find_unit(unit)
+        factory = find_producer_unit(unit)
+        time = factory.time if isinstance(factory.time, int) else factory.time.get(unit.name)
+        count = rate * time
+        resources['Power'] = resources.get('Power', 0) + count * factory.power
+        for name, amount in factory.recipes.get(unit.name).items():
+            try:
+                resourceType = Data.find_resource_type(name)
+            except ValueError:
+                resourceType = None
+            if resourceType is None:
+                pending[name] = pending.get(name, 0) + count * amount / time
+            elif resourceType == 'Fluid':
+                resources[name] = resources.get(name, 0) + count * amount
+            else:
+                resources[name] = resources.get(name, 0) + count * amount / time
+        if factory.trees.get(unit.name) is not None:
+            pending[factory.trees[unit.name]] = count / time
 
     return resources
-
