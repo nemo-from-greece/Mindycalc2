@@ -221,21 +221,19 @@ list[Data.UnitFactory]]:
             break
     return path, factories
 
-def calculate_process_inputs(unit: Data.Unit | str, rate: float) -> dict[str, float]:
+def calculate_process_inputs(unit: Data.Unit | str) -> dict[str, float]:
     """
     Calculate the cumulative input rates required to produce the first unit in
-    path at a given output rate.
+    path at 1 unit/minute.
 
     Args:
         unit (Data.Unit | str): Unit to be produced.
-        rate (float): Desired production rate of the first unit in path,
-            expressed in units per minute.
 
     Returns:
         dict[str, float]: Mapping of resource names (items, fluids, power) to
         their required input rates, expressed in resources per second.
     """
-    rate /= 60
+    rate = 1 / 60
     resources = {}
     pending = {unit: rate}
     while pending:
